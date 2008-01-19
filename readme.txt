@@ -2,9 +2,9 @@
 Contributors: quanganhdo
 Donate link: http://onetruebrace.com/
 Tags: smilies, smileys, posts, comments
-Requires at least: 2.0
+Requires at least: 2.3
 Tested up to: 2.3.2
-Stable tag: 1.1
+Stable tag: 1.2
 
 Custom Smilies (previously named Custom Smileys) gives you a chance to personalize your posts and comments using smilies of your choice instead of default ones.
 

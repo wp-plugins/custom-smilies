@@ -4,7 +4,7 @@ Plugin Name: Custom Smilies
 Plugin URI: http://onetruebrace.com/custom-smilies
 Description: Personalize your posts and comments using custom smilies. Previously named Custom Smileys.
 Author: Quang Anh Do
-Version: 1.1
+Version: 1.2
 Author URI: http://onetruebrace.com
 
 Copyright 2005 - 2008 Quang Anh Do  (email : quanganhdo@onetruebrace.com)
@@ -30,6 +30,9 @@ Version History:
 	+ Added: The ability to specify which smilies to be displayed above the comment form
 	+ Added: Return all smilies with cs_all_smilies()
 	+ Fixed: Problems with file names 
+- Version 1.2:
+	+ Added: More/Less link
+	+ Fixed: Blog URL changed to WordPress URL
 	
 */
 
@@ -78,12 +81,12 @@ function cs_options() {
         	<table class="optiontable">
 				<tr valign="top">
 					<th scope="row">
-						Only display these smilies above the comment form:
+						Display these smilies above the comment form by default:
 					</th>				
 					<td>
 						<input type="text" value="<?php echo get_option('cs_list') ?>" name="list" style="width:95%"><br />
 						Put your smilies here, separated by comma. Example: <b>:D, :), :wink:, :(</b><br />
-						Please leave this field blank if you want to display all smilies.
+						Leave this field blank if you want to display all smilies.
 					</td>
 				</tr>
 			</table>      
@@ -298,7 +301,7 @@ function csm_comment_form() {
 // return all smilies
 function cs_all_smilies() {
 	global $wpsmiliestrans;
-	$url = get_bloginfo('url').'/wp-includes/images/smilies';
+	$url = get_bloginfo('wpurl').'/wp-includes/images/smilies';
 	foreach ($wpsmiliestrans as $k => $v) {
 		$smilies[$k] = "$url/$v";
 	}
@@ -311,7 +314,7 @@ function cs_print_smilies() {
     <script type="text/javascript">
     function grin(tag) {
     	var myField;
-    	tag += ' ';
+    	tag = ' ' + tag + ' ';
         if (document.getElementById('comment') && document.getElementById('comment').type == 'textarea') {
     		myField = document.getElementById('comment');
     	} else {
@@ -340,10 +343,20 @@ function cs_print_smilies() {
     		myField.focus();
     	}
     }
+    
+    function moreSmilies() {
+    	document.getElementById('wp-smiley-more').style.display = 'inline';
+    	document.getElementById('wp-smiley-toggle').innerHTML = '<a href="javascript:lessSmilies()">&laquo;&nbsp;less</a></span>';
+    }
+    
+    function lessSmilies() {
+    	document.getElementById('wp-smiley-more').style.display = 'none';
+    	document.getElementById('wp-smiley-toggle').innerHTML = '<a href="javascript:moreSmilies()">more&nbsp;&raquo;</a>';
+    }
     </script>
 <?php
     $smilies = cs_load_existing_smilies();
-    $url = get_bloginfo('url').'/wp-includes/images/smilies';
+    $url = get_bloginfo('wpurl').'/wp-includes/images/smilies';
     $list = get_option('cs_list');            
 
     if ($list == '') {
@@ -356,7 +369,13 @@ function cs_print_smilies() {
     	foreach ($display as $v) {
     		$v = trim($v);
     		echo "<img src='{$url}/{$smilies[$v]}' alt='{$v}' onclick='grin(\"{$v}\")' class='wp-smiley-select' /> ";
+    		unset($smilies[$v]);    		
     	}
+    	echo '<span id="wp-smiley-more" style="display:none">';
+    	foreach ($smilies as $k => $v) {
+    		echo "<img src='{$url}/{$v}' alt='{$k}' onclick='grin(\"{$k}\")' class='wp-smiley-select' /> ";
+    	}
+    	echo '</span> <span id="wp-smiley-toggle"><a href="javascript:moreSmilies()">more&nbsp;&raquo;</a></span>';
     }            
 }
 
@@ -366,7 +385,7 @@ function cs_add_box() {
     <script type="text/javascript">
     function grin(tag) {
     	var myField;
-    	tag += ' ';
+    	tag = ' ' + tag + ' ';
     	if (document.getElementById('content') && document.getElementById('content').style.display != 'none' && document.getElementById('content').type == 'textarea') {
     		myField = document.getElementById('content');
             if (document.selection) {
@@ -401,7 +420,7 @@ function cs_add_box() {
 		<div class="dbx-content">
 <?php
             $smilies = cs_load_existing_smilies();
-            $url = get_bloginfo('url').'/wp-includes/images/smilies';
+            $url = get_bloginfo('wpurl').'/wp-includes/images/smilies';
 
 
         	foreach ($smilies as $k => $v) {
